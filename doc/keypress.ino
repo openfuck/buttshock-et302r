@@ -12,7 +12,7 @@ void send2(int x1) {
   DDRD = DDRD | B1000; // pin 3 output
   delayMicroseconds(7);
   PORTD = B1000; // pin 3 high
-  delayMicroseconds(8);24=
+  delayMicroseconds(8);
   PORTD = 0; // pin 3 low
   delayMicroseconds(7);
   DDRD = DDRD & B11110111; // pin 3 input
@@ -27,14 +27,32 @@ void send2(int x1) {
 }
 
 void loop() {
+  byte x = PIND&B1000; // pin3
+
+  if (x == 0) {
+     while( x == 0) {
+       x = PIND&B1000;
+     }
+     int z = 0;
+     delayMicroseconds(20);
+     for (byte i=0; i<9; i++) { 
+       z=z<<1;
+       if (PIND&B100) {
+         z=z+1;
+       }
+       delayMicroseconds(29);
+     }
+     String s = "000000000"+String(z,BIN);
+     Serial.println(s.substring(s.length()-9));
+  }
   if (Serial.available()) {
     String a = Serial.readString();
 //    for (int i=0; i<10; i++) {
       send2(a.toInt());
 //      delay(15);
-//      send2(0);
-//      delay(15);
-//    }
+//     send2(0);
+//     delay(15);
+ //   }
     
   }
 }
