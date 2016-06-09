@@ -17,16 +17,17 @@ void send2(int x1) {
   delayMicroseconds(8);
   PORTD = 0; // pin 3 low
   delayMicroseconds(7);
+  PORTD = B100; // pin 2 high
   DDRD = DDRD & B11100111; // pin 3,4 input
   DDRD = DDRD | B100; // pin 2 output
 
-  while((PIND&B10000) == 0) {}; // wait for clock H
+  while((PIND&B10000) != 0) {}; // wait for clock L
 
   for (int i=0; i<8; i++) {
     PORTD = (x1&1)<<2;
     x1=x1>>1;
-    while((PIND&B10000) != 0) {};     
-    while((PIND&B10000) == 0) {}; // wait for clock L->H
+    while((PIND&B10000) == 0) {};     
+    if (i<7) while((PIND&B10000) != 0) {}; // wait for clock L->H
   }
   DDRD = DDRD & B11111011; // pin 2 input
 }
@@ -42,8 +43,8 @@ void loop() {
       byte z = 0;      
       delayMicroseconds(5);
       for (byte i=0; i<8; i++) { 
-        while((PIND&B10000) == 0) {}; // wait for clock H->L
         while((PIND&B10000) != 0) {};        
+        while((PIND&B10000) == 0) {}; // wait for clock L->H
         z=z<<1;
         if (PIND&B100) {
            z=z+1;
@@ -55,12 +56,12 @@ void loop() {
   }
   if (Serial.available()) {
     String a = Serial.readString();
-//    for (int i=0; i<10; i++) {
+//    for (int i=0; i<16; i++) {
       send2(a.toInt());
-//      delay(15);
+//     delay(103);
 //     send2(0);
 //     delay(15);
- //   }
+//   }
     
   }
 }
