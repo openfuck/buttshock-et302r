@@ -3,7 +3,13 @@ attiny12 keypress data sent to atmega
 interrupt the atmega by sending Z-0(8uS)-1(8uS)-0(8uS)-Z from
 pin 2 of attiny.
 
-then pin 6 of attiny contains keypress data with 29uS timing
+atmega will then give you a clock on SCLK and you get 8 bits
+on the rising edge of the clock (it's about 30uS timing) on
+pin 6.
 
-Z-L-button3-button2-button1-button0-L-L-L-L-L-Z 
+button3-button2-button1-button0-L-L-L-L
 
+Idle message from attiny every 4 seconds with no keypress:
+L L L L H H H H
+
+See keypress.ino for ardunio code to read/send keypresses
